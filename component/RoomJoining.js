@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRoom } from '@huddle01/react/hooks';
+import { AccessToken, Role } from '@huddle01/server-sdk/auth';
+
 
 const apiKey = process.env.NEXT_PUBLIC_API_KEY ; // Replace with your actual API key
 
@@ -44,25 +46,51 @@ const RoomJoining = ({ roomId }) => {
     fetchRoomToken();
   }, [roomId]);
 
-  console.log(roomToken)
+  
 
-  const handleJoinRoom = () => {
-    console.log('Trying to join room:', roomId, roomToken); // Check the values here
-    if (roomToken) {
-        console.log('Room token available, attempting to join room...');
+  const handleJoinRoom  = async () => {
+    console.log("this is the api key" , apiKey);
+    console.log("this is the room id" , roomId)
+    
         try {
-          joinRoom({
-            roomId: roomId,
-          
+          const accessToken = new AccessToken({
+            apiKey,
+            roomId, // Use the roomId received as a prop
+            role: Role.HOST,
+            permissions: {
+              admin: true,
+              canConsume: true,
+              canProduce: true,
+              canProduceSources: {
+                cam: true,
+                mic: true,
+                screen: true,
+              },
+              canRecvData: true,
+              canSendData: true,
+              canUpdateMetadata: true,
+         
+            },
+            options: {
+              metadata: {
+                walletAddress: 'axit.eth', // Add any custom metadata here
+              },
+            },
           });
+      
+          // Use the accessToken to join the room
+          console.log(await accessToken.toJwt())
+          await joinRoom({
+            roomId,
+            token: await accessToken.toJwt(), // Get the JWT token from AccessToken
+          });
+     
+          console.log('Joined the room');
         } catch (error) {
           console.error('Error joining room:', error);
         }
-      } else {
-        console.error('Room token is not available');
-      }
-    
-  };
+      };
+  
 
   return (
     <div>

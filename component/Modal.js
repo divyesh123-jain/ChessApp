@@ -14,8 +14,7 @@ function Modal({ players, room, orientation, cleanup }) {
   // Game component returned jsx
   return (
     <>
-    <div className="flex flex-row w-full">
-   
+  
 <div className="w-1/3">
     <div className="board " style={{
         
@@ -36,7 +35,7 @@ function Modal({ players, room, orientation, cleanup }) {
         />
       </div>
       </div>
-      </div>
+    
     </>
   );
 }
