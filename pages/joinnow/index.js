@@ -157,6 +157,15 @@ const RoomJoining = () => {
     Disable Video
   </button>
 
+  <button
+  className="p-2 mx-2"
+  onClick={async () => {
+    await enableAudio();
+  }}
+>
+  Enable Audio
+</button>
+
     <div className="relative flex place-items-center  before:lg:h-[360px]">
     {isVideoOn && (
       <video
