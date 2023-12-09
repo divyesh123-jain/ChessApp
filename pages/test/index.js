@@ -5,11 +5,15 @@ import { useRoom ,  useLocalAudio,
   useLocalVideo,
   usePeerIds, } from '@huddle01/react/hooks';
 import { AccessToken, Role } from '@huddle01/server-sdk/auth';
-import RemotePeer from './RemotePeer';
+import { useSearchParams } from 'next/navigation'
+import RemotePeer from '@/component/RemotePeer';
 
 const apiKey = process.env.NEXT_PUBLIC_API_KEY ; // Replace with your actual API key
 
-const RoomJoining = ({ roomId }) => {
+const RoomJoining = () => {
+    const search = useSearchParams();
+    const roomId = search.get('roomid');
+    
   const [roomToken, setRoomToken] = useState('');
   const { joinRoom, leaveRoom } = useRoom({
     onJoin: (room) => {
@@ -26,14 +30,14 @@ const RoomJoining = ({ roomId }) => {
     },
   });
 
-  useEffect(() => {
+
     const fetchRoomToken = async () => {
       try {
         const response = await axios.post(
           'https://api.huddle01.com/api/v1/join-room-token',
           {
             roomId: roomId,
-            userType: 'host', // Assuming the userType is 'host', adjust as needed
+            userType: 'guest', // Assuming the userType is 'host', adjust as needed
           },
           {
             headers: {
@@ -49,12 +53,13 @@ const RoomJoining = ({ roomId }) => {
       }
     };
 
-    fetchRoomToken();
-  }, [roomId]);
+    
+  
 
   
 
   const handleJoinRoom  = async () => {
+    fetchRoomToken();
     console.log("this is the api key" , apiKey);
     console.log("this is the room id" , roomId)
     
@@ -103,7 +108,9 @@ const RoomJoining = ({ roomId }) => {
   return (
     <>
     <div>
-
+{
+    `${roomId}`
+}
       <button onClick={handleJoinRoom}>Join Room</button>
       <button onClick={() => leaveRoom(roomId)}>Leave Room</button>
     </div>

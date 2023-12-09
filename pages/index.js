@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Modal from "@/component/Modal";
 import CreateRoom from '@/component/CreateRoom';
 import RoomJoining from '@/component/RoomJoining';
+
 const apiKey = 'process.env.NEXT_PUBLIC_API_KEY ';
 
 export default function Home() {
