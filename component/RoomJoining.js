@@ -10,7 +10,7 @@ import { useRoom ,  useLocalAudio,
 import { AccessToken, Role } from '@huddle01/server-sdk/auth';
 import Router from 'next/router';
 import RemotePeer from './RemotePeer';
-const BaseUrl = "http://localhost:3000/";
+const BaseUrl = "https://chess-app-beta.vercel.app/";
 const apiKey = process.env.NEXT_PUBLIC_API_KEY ; // Replace with your actual API key
 
 
