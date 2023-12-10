@@ -218,10 +218,12 @@ const RoomJoining = () => {
       <button onClick={handleJoinRoom}>Join Room</button>
  <button onClick={depositToContract} className="">
         Deposit to Contract
+        
       </button>
       {showModal && ( // Render the modal if showModal is true
       <Modal handleClose={handleCloseModal} /> // Assuming Modal component takes a handleClose prop
     )}
+     
       <button onClick={() => leaveRoom(roomId)}>Leave Room</button>
 
       <button
