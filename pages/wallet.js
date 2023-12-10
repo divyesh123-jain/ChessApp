@@ -1,18 +1,11 @@
-import React, { useState ,useEffect ,useRef} from 'react';
-import Modal from "@/component/Modal";
-import CreateRoom from '@/component/CreateRoom';
-import RoomJoining from '@/component/RoomJoining';
+import React, { useEffect, useState, useRef } from 'react';
 import Web3Modal from 'web3modal';
 import { CHESS_CONTRACT_ABI, CHESS_CONTRACT_ADDRESS } from '@/constants';
 import { Contract, providers, utils } from "ethers";
-
-const apiKey = 'process.env.NEXT_PUBLIC_API_KEY ';
-
-export default function Home() {
+const Wallet = () => {
   const [walletConnected, setWalletConnected] = useState(false);
   const [loading, setLoading] = useState(false);
   const web3ModalRef = useRef(null); 
-  const [showModal, setShowModal] = useState(false);
 
   const connectWallet = async () => {
     try {
@@ -51,7 +44,6 @@ export default function Home() {
       await transaction.wait();
       setLoading(false);
       window.alert("You're successfully!");
-      setPaymentCompleted(true)
     } catch (error) {
       console.error(error);
       setLoading(false);
@@ -69,8 +61,6 @@ export default function Home() {
     }
   }, [walletConnected]);
 
-  
-
   const renderButton = () => {
     if (!walletConnected) {
       return (
@@ -83,28 +73,19 @@ export default function Home() {
     if (loading) {
       return <button className="">Loading...</button>;
     }
-  }
-  const [roomId, setRoomId] = useState(null);
-  const [paymentCompleted, setPaymentCompleted] = useState(false);
 
-  const handleRoomCreated = (newRoomId) => {
-    setRoomId(newRoomId);
+    return (
+      <button onClick={depositToContract} className="">
+        Deposit to Contract
+      </button>
+    );
   };
 
   return (
-   <>
-   <div>
-        {/* ...existing code... */}
-        <CreateRoom apiKey={apiKey} onRoomCreated={handleRoomCreated} />
-        <button onClick={depositToContract} className="">
-        Deposit to Contract
-      </button>
-   
-        {roomId && paymentCompleted && <RoomJoining roomId={roomId} />}
-       
-      </div>
-
-    
-   </>
+    <div>
+      {renderButton()}
+    </div>
   );
-}
+};
+
+export default Wallet;
