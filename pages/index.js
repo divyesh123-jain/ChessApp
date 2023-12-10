@@ -1,10 +1,12 @@
 import React, { useState ,useEffect ,useRef} from 'react';
 import Modal from "@/component/Modal";
+import { Button } from '@nextui-org/react';
 import CreateRoom from '@/component/CreateRoom';
 import RoomJoining from '@/component/RoomJoining';
 import Web3Modal from 'web3modal';
 import { CHESS_CONTRACT_ABI, CHESS_CONTRACT_ADDRESS } from '@/constants';
 import { Contract, providers, utils } from "ethers";
+
 
 const apiKey = 'process.env.NEXT_PUBLIC_API_KEY ';
 
@@ -93,16 +95,26 @@ export default function Home() {
 
   return (
    <>
-   <div>
+   
+   <div className='grid grid-cols-1 bg-purple-600 min-h-screen'>
+   
         {/* ...existing code... */}
+      
+    
+     
+        {renderButton()}
+     
+        
         <CreateRoom apiKey={apiKey} onRoomCreated={handleRoomCreated} />
-        <button onClick={depositToContract} className="">
+        <Button  onClick={depositToContract} className="bg-red-300 w-[80vh] px-5 mx-2 h-[5vh] rounded-3xl">
         Deposit to Contract
-      </button>
+      </Button>
+    
    
         {roomId && paymentCompleted && <RoomJoining roomId={roomId} />}
-       
+     
       </div>
+
 
     
    </>

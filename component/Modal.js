@@ -17,6 +17,7 @@ export default function PlayRandomMoveEngine() {
   }
 
   const [game, setGame] = useState(new Chess());
+  
   // console.log('🚀 ~ PlayRandomMoveEngine ~ game:', game);
 
   // const chess = new Chess();
@@ -166,6 +167,7 @@ export default function PlayRandomMoveEngine() {
       </Transition>
 
       <div style={{
+        
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',

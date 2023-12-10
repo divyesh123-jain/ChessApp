@@ -215,21 +215,23 @@ const RoomJoining = ({ roomId }) => {
  
   return (
     <>
-    <div>
-
-<div>
+    <Modal />
+ 
+<div className=''>
 Joining Info: {BaseUrl}test?roomid={roomId}
 </div>
 
 
-  <button onClick={handleJoinRoom} className="">
+
+  <button onClick={handleJoinRoom} className="mx-2">
     Join Room
   </button>
+  <div>
+  {showModal && ( // Render the modal if showModal is true
+  <Modal handleClose={handleCloseModal} /> // Assuming Modal component takes a handleClose prop
+)}
 
 
-{showModal && ( // Render the modal if showModal is true
-        <Modal handleClose={handleCloseModal} /> // Assuming Modal component takes a handleClose prop
-      )}
       
       <button onClick={() => leaveRoom(roomId)}>Leave Room</button>
      
@@ -242,7 +244,9 @@ Joining Info: {BaseUrl}test?roomid={roomId}
     >
       Enable Video
     </button>
+
     </div>
+ 
 
     <button
     className="p-2 mx-2"
@@ -272,6 +276,8 @@ Joining Info: {BaseUrl}test?roomid={roomId}
       />
     )}
   </div>
+
+  
 
     <div className="mt-4 mb-32 grid gap-2 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
     {peerIds.map((peerId) =>

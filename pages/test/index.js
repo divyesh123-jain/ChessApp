@@ -1,5 +1,6 @@
 import React, { useState, useEffect , useRef} from 'react';
 import axios from 'axios';
+import Modal from '../../component/Modal'
 import { useRoom ,  useLocalAudio,
   useLocalPeer,
   useLocalVideo,
@@ -7,6 +8,10 @@ import { useRoom ,  useLocalAudio,
 import { AccessToken, Role } from '@huddle01/server-sdk/auth';
 import { useSearchParams } from 'next/navigation'
 import RemotePeer from '@/component/RemotePeer';
+import Web3Modal from 'web3modal';
+import { CHESS_CONTRACT_ABI, CHESS_CONTRACT_ADDRESS } from '@/constants';
+import { Contract, providers, utils } from "ethers";
+
 
 const apiKey = process.env.NEXT_PUBLIC_API_KEY ; // Replace with your actual API key
 
@@ -15,6 +20,10 @@ const RoomJoining = () => {
     const { enableAudio, isAudioOn, stream: audioStream } = useLocalAudio();
     const search = useSearchParams();
     const roomId = search.get('roomid');
+    const [showModal, setShowModal] = useState(false);
+    const [walletConnected, setWalletConnected] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const web3ModalRef = useRef(null); 
     
     
     
@@ -34,6 +43,15 @@ const RoomJoining = () => {
       console.error('Socket Connection Error:', error);
     },
   });
+
+  const connectWallet = async () => {
+    try {
+      await getProviderOrSigner();
+      setWalletConnected(true);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const { peerIds } = usePeerIds();
 
@@ -74,7 +92,68 @@ const RoomJoining = () => {
 
     
   
-
+  
+    const getProviderOrSigner = async (needSigner = false) => {
+      const provider = await web3ModalRef.current.connect();
+      const web3Provider = new providers.Web3Provider(provider);
+  
+      const { chainId } = await web3Provider.getNetwork();
+      if (chainId !== 11155111) {
+        window.alert('Change the network to sepolia');
+        throw new Error('Change network to sepolia');
+      }
+  
+      if (needSigner) {
+        const signer = web3Provider.getSigner();
+        return signer;
+      }
+      return web3Provider;
+    };
+  
+    const depositToContract = async () => {
+      try {
+        setLoading(true);
+        const signer = await getProviderOrSigner(true);
+  
+        const contract = new Contract(CHESS_CONTRACT_ADDRESS, CHESS_CONTRACT_ABI, signer);
+        const transaction = await contract.deposit({ value: utils.parseEther('0.001') });
+  
+        await transaction.wait();
+        setLoading(false);
+        window.alert("You're successfully!");
+        setPaymentCompleted(true)
+      } catch (error) {
+        console.error(error);
+        setLoading(false);
+      }
+    };
+  
+    useEffect(() => {
+      if (!walletConnected) {
+        web3ModalRef.current = new Web3Modal({
+          network: 'sepolia',
+          providerOptions: {}, // You may add provider options here
+          disableInjectedProvider: false,
+        });
+        connectWallet();
+      }
+    }, [walletConnected]);
+  
+    
+  
+    const renderButton = () => {
+      if (!walletConnected) {
+        return (
+          <button onClick={connectWallet} className="">
+            Connect your wallet
+          </button>
+        );
+      }
+  
+      if (loading) {
+        return <button className="">Loading...</button>;
+      }
+    }
   
 
   const handleJoinRoom  = async () => {
@@ -114,28 +193,35 @@ const RoomJoining = () => {
             roomId,
             token: await accessToken.toJwt(), // Get the JWT token from AccessToken
           });
-     
+          setShowModal(true);
           console.log('Joined the room');
         } catch (error) {
           console.error('Error joining room:', error);
         }
       };
   
-
+      const handleCloseModal = () => {
+        // Function to close the modal
+        setShowModal(false);
+      };
       
     
       
     
     
- 
+ console.log(showModal)
 
   return (
     <>
     <div>
-{
-    `${roomId}`
-}
+ 
       <button onClick={handleJoinRoom}>Join Room</button>
+ <button onClick={depositToContract} className="">
+        Deposit to Contract
+      </button>
+      {showModal && ( // Render the modal if showModal is true
+      <Modal handleClose={handleCloseModal} /> // Assuming Modal component takes a handleClose prop
+    )}
       <button onClick={() => leaveRoom(roomId)}>Leave Room</button>
 
       <button
