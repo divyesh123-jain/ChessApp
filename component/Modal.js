@@ -98,6 +98,19 @@ export default function PlayRandomMoveEngine() {
     }
   }, [game]);
 
+  function announceWinnerAndCongratulate(game) {
+    // Determine the winner
+    const winnerColor = game.turn() === 'w' ? 'black' : 'white';
+  
+    // Log the winner's color in the console
+    console.log('The Winner is:', winnerColor);
+  
+    // Create a message for the winner
+    const congratulatoryMessage = 'Well played and the winner is ' + (winnerColor === 'black' ? 'black' : 'white') + '! Congratulations on your win!';
+  
+    // Display the message outside the console
+    alert(congratulatoryMessage);
+  }
   // return <Chessboard position={game.fen()} onPieceDrop={onDrop} />;
 
   return (
@@ -146,7 +159,7 @@ export default function PlayRandomMoveEngine() {
                   </Dialog.Title>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">
-                      Well played and congrats on your win!
+                      Well played and the winner is  and congrats on your win!
                     </p>
                   </div>
 
