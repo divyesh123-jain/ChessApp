@@ -96,9 +96,9 @@ export default function Home() {
   return (
    <>
    
-   <div className='grid grid-cols-1 bg-purple-600 min-h-screen'>
+   <div className=' bg-purple-600 '>
    
-        {/* ...existing code... */}
+       
       
     
      
